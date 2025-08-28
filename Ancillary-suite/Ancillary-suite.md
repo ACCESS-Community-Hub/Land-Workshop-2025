@@ -89,5 +89,35 @@ Usage: `ancil_topographic_index.py <source>`, where `source` is a NetCDF file de
 * `--use-new-saver`: Optional, whether to use the new ANTS saver, which additionally saves to NetCDF.
 * `-o <path>`: File name to write the output to. If `--use-new-saver` is specified, then also saves to NetCDF with the `.nc` extension.
 
+### `ancil_soil_albedo.py`
 
+Usage: `ancil_soil_albedo.py <source>`, where `source` is a NetCDF file describing soil albedo. Generate the soil albedo ancillaries.
 
+#### Arguments
+
+* `--lct-ancillary <path>`: UM ancillary file describing the land cover.
+* `--ants-config <path>`: ANTS config file for the app.
+* `--use-new-saver`: Optional, whether to use the new ANTS saver, which additionally saves to NetCDF.
+* `-o <path>`: File name to write the output to. If `--use-new-saver` is specified, then also saves to NetCDF with the `.nc` extension.
+
+### `ancil_soil_dust.py`
+
+Usage: `ancil_soil_albedo.py <source>`, where `source` is a UM ancillary file describing soil dust. Generates the soil dust ancillaries.
+
+#### Arguments
+
+* `--lct-ancillary <path>`: UM ancillary file describing the land cover.
+* `--ants-config <path>`: ANTS config file for the app.
+* `--use-new-saver`: Optional, whether to use the new ANTS saver, which additionally saves to NetCDF.
+* `-o <path>`: File name to write the output to. If `--use-new-saver` is specified, then also saves to NetCDF with the `.nc` extension.
+
+### `ancil_soil_roughness.py`
+
+Usage: `ancil_soil_roughness.py <source>`, where `source` is a NetCDF file describing the soil roughness. Generates the soil roughness ancillary, with assistance from an LAI dataset.
+
+#### Arguments
+
+* `--target-lsm <path>`: Land-sea mask file to project onto.
+* `--leaf-area-index <path>`: NetCDF file describing the leaf area index.
+* `--use-new-saver`: Optional, whether to use the new ANTS saver, which additionally saves to NetCDF.
+* `-o <path>`: File name to write the output to. If `--use-new-saver` is specified, then also saves to NetCDF with the `.nc` extension.
