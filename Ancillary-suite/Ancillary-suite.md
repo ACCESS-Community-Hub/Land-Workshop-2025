@@ -46,16 +46,6 @@ Usage: `ancil_lct.py <source>`, where `source` is the source vegetation distribu
 
 The important part of this stage is the mapping from the source tile classes to the target tiles. This is done by a `N x M` matrix, where N is the number of input types, and M the output.
 
-### `ancil_general_regrid.py`
-
-Usage: `ancil_general_grid.py <source>`, where `source` is the source ancillary dataset. Regrids the ancillary dataset to the target resolution.
-
-#### Arguments
-
-* `--ants_config <path>`: ANTS config file for the app.
-* `--target-lsm <path>`: Land-sea mask file to project onto.
-* `-o <path>`: File name to write the output to.
-
 ### `ancil_lct_postproc_c4.py`
 
 Usage: `ancil_lct_postproc_c4.py <source>`, where `source` is the original land cover map as NetCDF. Splits the initial C3 grass land cover into C3 and C4 cover.
@@ -147,3 +137,31 @@ Usage: `ancil_soil_roughness.py <source>`, where `source` is a NetCDF file descr
 * `--leaf-area-index <path>`: NetCDF file describing the leaf area index.
 * `--use-new-saver`: Optional, whether to use the new ANTS saver, which additionally saves to NetCDF.
 * `-o <path>`: File name to write the output to. If `--use-new-saver` is specified, then also saves to NetCDF with the `.nc` extension.
+
+### `ancil_general_regrid.py`
+
+Usage: `ancil_general_grid.py <source>`, where `source` is the source ancillary dataset. Regrids the ancillary dataset to the target resolution.
+
+#### Arguments
+
+* `--ants_config <path>`: ANTS config file for the app.
+* `--target-lsm <path>`: Land-sea mask file to project onto.
+* `-o <path>`: File name to write the output to.
+
+### `ancil_2anc.py`
+
+Usage: `ancil_2anc.py <lai_source> <canopy_heights_source>`, where `lai_source` and `canopy_heights_source` are the respective generated ancillary files.
+
+#### Arguments
+
+* `--use-new-saver`: Optional, whether to use the new ANTS saver, which additionally saves to NetCDF.
+* `-o <path>`: File name to write the output to. If `--use-new-saver` is specified, then also saves to NetCDF with the `.nc` extension.
+
+### `append.py`
+
+Usage: `append.py <sources>`, where `sources` are a set of ancillary files to combine.
+
+#### Arguments
+
+* `-o <path>`: File name to write the output to. If `--use-new-saver` is specified, then also saves to NetCDF with the `.nc` extension.
+
