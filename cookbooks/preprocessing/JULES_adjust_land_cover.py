@@ -3,8 +3,6 @@ A simple example of adjusting land cover with MULE (here within a region, bare_s
 
 Requires hh5, i.e.: 
     module use /g/data/hh5/public/modules; module load conda/analysis3
-# or more recent xp65 i.e.:
-#     module use /g/data/xp65/public/modules; module load conda/analysis3-25.09
 
 Example usage:
     python JULES_adjust_land_cover.py --fpath /path/to/land_cover_file.nc --mask_file /path/to/fire_mask.nc --plot
@@ -31,13 +29,13 @@ import mule
 
 ###############################################################################
 
-stashid = 216  # for fraction of surface types stash m01s00i216
-soil_fraction=0.8                   # 80% soil in fire areas
+stashid = 216                 # for surface cover fraction: stash m01s00i216
+soil_fraction = 0.8           # 80% soil in fire areas
 shrub_fraction= 1. - soil_fraction 
 
 ###############################################################################
 
-pseudo_map = {
+jules_pseudo_map = {
     'broad_leaf': 1, 
     'needle_leaf': 2, 
     'c3_grass': 3, 
@@ -91,14 +89,14 @@ def main(original_path):
 
     return
 
-def adjust_land_cover(cb_adjusted, mask, soil_fraction=0.8, shrub_fraction=0.2):
+def adjust_land_cover(cb_adjusted, mask, soil_fraction, shrub_fraction):
     """Adjust land cover fractions within the mask."""
     
     pseudo_levels = cb_adjusted.coord('pseudo_level').points
     
     # Find indices for specific land cover types
-    soil_idx = np.where(pseudo_levels == pseudo_map['soil'])[0][0]
-    shrub_idx = np.where(pseudo_levels == pseudo_map['shrub'])[0][0]
+    soil_idx = np.where(pseudo_levels == jules_pseudo_map['soil'])[0][0]
+    shrub_idx = np.where(pseudo_levels == jules_pseudo_map['shrub'])[0][0]
     
     # Apply adjustments within the masked area
     cb_adjusted.data[:, mask] = 0.0
@@ -147,9 +145,9 @@ def plot_land_cover(cb_adjusted, output_path):
     ds = xr.DataArray().from_iris(cb_adjusted)
     ds.plot(col='dim_0', col_wrap=5, cmap='turbo', vmin=0, vmax=1, figsize=(20, 8))
     
-    # Give titles based on pseudo_map levels
+    # Give titles based on jules_pseudo_map levels
     for i, level in enumerate(pseudo_levels):
-        name = list(pseudo_map.keys())[list(pseudo_map.values()).index(level)]
+        name = list(jules_pseudo_map.keys())[list(jules_pseudo_map.values()).index(level)]
         plt.gcf().axes[i].set_title(f"{level} - {name}")
     
     # Save figure
