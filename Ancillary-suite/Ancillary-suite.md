@@ -4,6 +4,32 @@ We have created an ancillary creation suite, building on work from Martin Best a
 
 ## Stages in the Workflow
 
+1. Map the input land cover map to the new grid with `ancil_lct.py`, specified either by a grid definition file or a landmask. A crosswalking table is used to convert input land cover types to output types.
+2. Regrid a C4 grass fraction dataset to the desired resolution with `ancil_general_regrid.py`.
+3. Split the C3 grass into C3 and C4 grasses, based on the regridded C4 dataset with `ancil_postproc_c4.py`.
+4. Regrid the LAI NetCDF dataset to the desired resolution with `ancil_general_regrid.py`.
+5. Assign LAI to the respective tiles using defined ratios of LAI between tiles with `ancil_lai.py`.
+6. Compute canopy heights based on a NetCDF tree height dataset and a per-PFT empirical relationship to LAI with `ancil_canopy_heights.py`.
+7. Merge the LAI and canopy heights into a `vegfunc` file with `ancil_2anc.py`.
+8. Compute soil hydrology using an input NetCDF dataset and a lookup table with `ancil_soils.py`.
+9. Compute topogrophy using an input NetCDF dataset with `ancil_topographic_index.py`.
+10. Compute soil albedo using an input NetCDF dataset with `ancil_soil_albedo.py`.
+11. Merge the hydrology and albedo ancillaries with `append.py`.
+12. Compute soil constituent fractions using a UM ancillary file with `ancil_soil_dust.py`.
+13. Compute soil roughness using the original LAI dataset with `ancil_soil_roughness.py`.
+
+## What's missing
+
+This is close to the full set ancillaries required for a CABLE gridinfo file. There are a few things missing:
+
+* Tile classification (`iveg`): What restrictions to the various modes of operation e.g. POP put on the tile distribution?
+* Soil moisture and temperature (`SoilMoist` and `SoilTemp`): These are state variables that aren't created by the ancillary suite. Should probably be moved out of gridinfo.
+* Snow depth (`SnowDepth`): Another state variable, again should be moved out of gridinfo.
+* Soil specific heat capacity (`css`): Ancillary suite creates heat capacity, which can be used with density to compute specific heat capacity. Does CABLE only use the product of specific heat capacity and density? If so, should it just be changed to volumetric heat capacity?
+* Soil density (`rhosoil`): Is this used for anything other than specific to volumetric heat capacity conversion?
+* `isoil` and `SoilOrder`: Are these actively used? What do they mean, where do they come from?
+* Cell area (`Area`): Is this necessary in offline?
+
 ### `ancil_lct.py`
 
 Usage: `ancil_lct.py <source>`, where `source` is the source vegetation distribution NetCDF file. Creates a new land cover map, and optionally a new land mask.
