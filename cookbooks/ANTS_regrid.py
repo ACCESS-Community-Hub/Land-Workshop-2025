@@ -1,13 +1,19 @@
 '''
-A simple example of using ANTS to regrid one ancillary to another grid
+A simple example of using ANTS to:
+1. regrid one ancillary to another grid
+2. fill gaps consistent with a land-sea mask
+3. save output as ancil and netcdf
 
-Requires access/ngm, i.e., 
+
+Requires  xp65, i.e.:
+    module use /g/data/xp65/public/modules; module load conda/analysis3-25.08
+or access/ngm, i.e., 
     module use /g/data/access/ngm/modules; module load ants/0.18
     module use /g/data/access/ngm/modules; module load ants/2.0.0
-Or xp65, i.e.:
-    module use /g/data/xp65/public/modules; module load conda/analysis3-25.08
 
-xp65 environment still being determined, see: 
+hh5 has ants, but throws an error on save
+
+note xp65 environment still being determined, see: 
     https://forum.access-hive.org.au/t/ants-module-availability-in-xp65-analysis3-kernels/5149/16
     
 '''
@@ -45,3 +51,22 @@ else:
 
 print('done!')
 
+
+# #### plot to check
+# import matplotlib.pyplot as plt
+# import xarray as xr
+
+# plt.close('all')
+# fig, ax = plt.subplots(1,3, figsize=(15,3))
+
+# xr.DataArray.from_iris(source_cube).isel(dim_0=0).plot(ax=ax[0], vmin=0, vmax=1, cbar_kwargs={'label': ''})
+# xr.DataArray.from_iris(target_lsm_cube).plot(ax=ax[1], vmin=0, vmax=1, cbar_kwargs={'label': ''})
+# xr.DataArray.from_iris(regridded_cube).isel(dim_0=0).plot(ax=ax[2], vmin=0, vmax=1, cbar_kwargs={'label': ''})
+
+# ax[0].set_title('Source (12 km)')
+# ax[1].set_title('Target LSM (1.5 km)')
+# ax[2].set_title('Regridded and filled (1.5 km)')
+
+# fig.savefig('./ANTS_regrid_example.png', dpi=300, bbox_inches='tight')
+
+# plt.show()
