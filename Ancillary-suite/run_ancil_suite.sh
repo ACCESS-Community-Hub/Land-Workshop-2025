@@ -21,10 +21,11 @@ module purge
 module use /g/data/access/ngm/modules
 module load ants/1.1.0
 
-NAME=""
+NAME="test"
 ANTS_SRC_PATH=/g/data/rp23/experiments/2024-10-10_LWG_workingbee/ants_scripts_shared
 ANCIL_MASTER=/g/data/access/TIDS/UM/ancil/atmos/master
 INPUT_PATH=${PWD}/inputs
+CONF_PATH=${PWD}/conf
 ANCIL_TARGET_PATH=/scratch/${PROJECT}/${USER}/${NAME}/outputs
 ANCIL_PREPROC_PATH=/g/data/access/TIDS/RMED/ANTS/preproc
 
@@ -44,7 +45,7 @@ target_grid=${INPUT_PATH}/grid.nl
 transformpath=${INPUT_PATH}/cci2cable.json
 output_vegfrac=${ANCIL_TARGET_PATH}/qrparm.veg.frac_cci_pre_c4
 output_lsm=${ANCIL_TARGET_PATH}
-ANTS_CONFIG=${INPUT_PATH}/ancil_lct-app.conf
+ANTS_CONFIG=${CONF_PATH}/ancil_lct-app.conf
 
 # ancil_lct.py takes the global categorical land cover product CCI [source]
 # and converts it to JULES tiles using a crosswalking table [transformpath]
@@ -67,7 +68,7 @@ source=${ANCIL_TARGET_PATH}/qrparm.veg.frac_cci_pre_c4.nc
 target_lsm=${ANCIL_TARGET_PATH}/qrparm.mask
 output=${ANCIL_TARGET_PATH}/qrparm.veg.frac_cci
 c4source=${ANCIL_MASTER}/vegetation/cover/cci/v3/c4_percent_1d.nc
-ANTS_CONFIG=${INPUT_PATH}/ancil_lct_postproc_c4-app.conf
+ANTS_CONFIG=${CONF_PATH}/ancil_lct_postproc_c4-app.conf
 c3level=6
 c4level=7
 
@@ -97,7 +98,7 @@ python ${ANTS_SRC_PATH}/ancil_lct_postproc_c4.py \
 # ============================================================================
 # config based on RAS (u-bu503) app/ancil_lai/rose-app.conf, walltime ~ 1 min
 source=${ANCIL_MASTER}/vegetation/lai/modis_4km/v2/lai_preprocessed.nc
-ANTS_CONFIG=${INPUT_PATH}/ancil_lai-app.conf
+ANTS_CONFIG=${CONF_PATH}/ancil_lai-app.conf
 target_lsm=${ANCIL_TARGET_PATH}/qrparm.mask
 
 # CABLE uses a single LAI value for each tile, so we only need to regrid MODIS
@@ -112,7 +113,7 @@ output=${ANCIL_TARGET_PATH}/lai
 source="${ANCIL_MASTER}/vegetation/lai/modis_4km/v2/lai_preprocessed.nc \
         ${ANCIL_TARGET_PATH}/qrparm.veg.frac_cci.nc"
 relative_weights=${TRANSFORM_DIR}/lai_weights_cable.json
-ANTS_CONFIG=${INPUT_PATH}/ancil_lai-app.conf
+ANTS_CONFIG=${CONF_PATH}/ancil_lai-app.conf
 
 # ancil_lai.py is a CONTRIB app that derives leaf area index for each vegetation 
 # tile based on # the total MODIS LAI split into weighted fractions depending on 
@@ -130,7 +131,7 @@ canopy_height_factors=${TRANSFORM_DIR}/canopy_height_factors_cable.json
 lai=${ANCIL_TARGET_PATH}/lai.nc
 output=${ANCIL_TARGET_PATH}/qrparm.veg.func
 trees=${ANCIL_MASTER}/vegetation/canopy/simard/v1/Simard_Pinto_3DGlobalVeg_JGR.nc
-ANTS_CONFIG=${INPUT_PATH}/ancil_lai-app.conf
+ANTS_CONFIG=${CONF_PATH}/ancil_lai-app.conf
 
 # ancil_canopy_heights.py is a CONTRIB app that uses a global source [trees] to 
 # represent the maximum canopy height across the year in each month for each PFT
@@ -161,7 +162,7 @@ source=${ANCIL_PREPROC_PATH}/soils_hydrology.nc
 vegfrac=${ANCIL_TARGET_PATH}/qrparm.veg.frac_cci
 soils_lookup=${ANCIL_PREPROC_PATH}/soils_hydrology_lookup_clapp_hornberger.json
 output=${ANCIL_TARGET_PATH}/soil_hydrology
-ANTS_CONFIG=${INPUT_PATH}/ancil_soils_hydr-app.conf
+ANTS_CONFIG=${CONF_PATH}/ancil_soils_hydr-app.conf
 
 # ancil_soils.py is a CONTRIB app that creates a large number of soils hydrology, carbon
 # and thermal property parameter ancillaries using a dominant approach. This task takes 
@@ -178,7 +179,7 @@ python ${ANTS_SRC_PATH}/Apps/SoilParameters/ancil_soils.py ${source} \
 vegfrac=${ANCIL_TARGET_PATH}/qrparm.veg.frac_cci.nc
 output=${ANCIL_TARGET_PATH}/qrparm.hydtop
 source=${ANCIL_PREPROC_PATH}/topographic_index.nc
-ANTS_CONFIG=${INPUT_PATH}/ancil_topographic_index-app.conf
+ANTS_CONFIG=${CONF_PATH}/ancil_topographic_index-app.conf
 
 # ancil_topgoraphic_index.py derives paramaters for TOP model hydrology
 # see: https://code.metoffice.gov.uk/doc/ancil/ants/1.1/bin/ancil_topographic_index.html
@@ -193,7 +194,7 @@ python ${ANTS_SRC_PATH}/ancil_topographic_index.py \
 source=${ANCIL_MASTER}/land_clim/GlobAlbedo/v2/qrclim.land.nc
 target_lsm=${ANCIL_TARGET_PATH}/qrparm.mask
 output=${ANCIL_TARGET_PATH}/qrclim.land
-ANTS_CONFIG=${INPUT_PATH}/ancil_snowfree_albedo-app.conf
+ANTS_CONFIG=${CONF_PATH}/ancil_snowfree_albedo-app.conf
 
 # ancil_general_regrid.py regrids global albedo [source] to the target grid [target_lsm]
 # a Linear horizontal regridding scheme is used by the RAS
@@ -209,7 +210,7 @@ source=${ANCIL_MASTER}/soil_albedo/classic/v3/soil_albedo.nc
 soil_hydrology=${ANCIL_TARGET_PATH}/soil_hydrology.nc
 output=${ANCIL_TARGET_PATH}/qrparm.soil_cci
 vegfrac=${ANCIL_TARGET_PATH}/qrparm.veg.frac_cci
-ANTS_CONFIG=${INPUT_PATH}/ancil_soil_albedo-app.conf
+ANTS_CONFIG=${CONF_PATH}/ancil_soil_albedo-app.conf
 
 # ancil_soil_albedo is a CONTRIB app that generates soil albedo from a global [source]
 # to the target lct grid [vegfrac]. It also sets soil albedo to 0.75 where there is ice.
@@ -233,7 +234,7 @@ python ${ANTS_SRC_PATH}/app/ancil_soil_albedo/bin/append.py \
 source=${ANCIL_TARGET_PATH}/qrparm.soil_cci
 vegfrac=${ANCIL_TARGET_PATH}/qrparm.veg.frac_cci
 output=${ANCIL_TARGET_PATH}/qrparm.soil.dust
-ANTS_CONFIG=${INPUT_PATH}/ancil_lai-app.conf
+ANTS_CONFIG=${CONF_PATH}/ancil_lai-app.conf
 
 # ancil_soil_dust creates 6 x mass fraction and 3 x volume fraction dust 
 # ancillaries based on clay silt and sand fractions.
@@ -248,7 +249,7 @@ python ${ANTS_SRC_PATH}/Apps/SoilDust/ancil_soil_dust.py ${source} \
 # config based on RAS (u-bu503) app/ancil_soil_roughness/rose-app.conf, walltime ~ 3 mins
 # NOTE: Siyuan's offline code is different, it appends soil roughness to the soil parameter ancillary
 #      therefore must be the last dependency (as here)
-ANCIL_CONFIG=${INPUT_PATH}/ancil_lai-app.conf
+ANCIL_CONFIG=${CONF_PATH}/ancil_lai-app.conf
 source=${ANCIL_MASTER}/soil_roughness/prigent12/v1/soil_roughness_preproc_prigent12.nc
 target_lai=${ANCIL_MASTER}/vegetation/lai/modis_4km/v2/lai_preprocessed.nc
 target_lsm=${ANCIL_TARGET_PATH}/qrparm.mask
